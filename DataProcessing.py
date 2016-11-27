@@ -38,5 +38,5 @@ if __name__ == "__main__":
     labelsTrain = read_dataset(train_output)
     print labelsTrain
     create_dataset(test_input,test_output,50)
-    labelsTrain = read_dataset(test_output)
-    print labelsTrain
+    labelsTest = read_dataset(test_output)
+    print labelsTest
