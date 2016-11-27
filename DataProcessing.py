@@ -1,4 +1,5 @@
 import nltk 
+import sys
 def create_dataset(input,output,count):
 	in_file = open(input, "r")
 	out_file = open(output, "w")
@@ -29,9 +30,13 @@ def read_dataset(input):
 
 if __name__ == "__main__":
     # reading, tokenizing, and normalizing data
-    create_dataset('/Users/aya/Documents/CMSC701/Project/Document-Similarities-Using-Dynamic-Programming-Alignment/datasets/20ng-train-all-terms.txt','/Users/aya/Documents/CMSC701/Project/Document-Similarities-Using-Dynamic-Programming-Alignment/train.txt',400)
-    labelsTrain = read_dataset('/Users/aya/Documents/CMSC701/Project/Document-Similarities-Using-Dynamic-Programming-Alignment/train.txt')
+    train_input=sys.argv[1]
+	train_output=sys.argv[2]
+	test_input = sys.argv[3]
+	test_output = sys.argv[4]
+    create_dataset(train_input,train_output,400)
+    labelsTrain = read_dataset(train_output)
     print labelsTrain
-    create_dataset('/Users/aya/Documents/CMSC701/Project/Document-Similarities-Using-Dynamic-Programming-Alignment/datasets/20ng-test-all-terms.txt','/Users/aya/Documents/CMSC701/Project/Document-Similarities-Using-Dynamic-Programming-Alignment/test.txt',50)
-    labelsTrain = read_dataset('/Users/aya/Documents/CMSC701/Project/Document-Similarities-Using-Dynamic-Programming-Alignment/test.txt')
+    create_dataset(test_input,test_output,50)
+    labelsTrain = read_dataset(test_output)
     print labelsTrain
