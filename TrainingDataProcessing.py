@@ -53,8 +53,6 @@ def create_training_glove(BOW,in_path,out_path):
 	in_file.close()
 	out_file.close()
 
-
-
 def read_glove (input):
 	glove = []
 	in_file = open(input, "r")
