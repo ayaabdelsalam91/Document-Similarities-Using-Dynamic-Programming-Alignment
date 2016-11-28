@@ -32,24 +32,23 @@ def get_similarity_from_glove(word1,word2,dictionary,glove):
 	else:
 		s=-1
 	return s
-
-
-       
+ 
 if __name__ == "__main__":
 	dic=sys.argv[1]
 	_glove=sys.argv[2]
 	dictionary = read_dictionary(dic)
 	glove= read_glove(_glove)
 	tic = time.time()
-	s= get_similarity_from_glove("a","of",dictionary,glove)
+	s= get_similarity_from_glove("a","cat",dictionary,glove)
 	toc = time.time()
+	print s
 	print('Processing time: %r'
            % (toc - tic))
 	tic = time.time()
-	s= get_similarity_from_wordnet("a","of")
+	s= get_similarity_from_wordnet('cat','a')
 	toc = time.time()
 	print('Processing time: %r'
            % (toc - tic))
 	#
-	#print s
+	print s
 
