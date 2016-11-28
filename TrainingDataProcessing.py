@@ -11,7 +11,7 @@ def bag_of_words(path):
 			else:
 				BOW[word] = 1
 				unqiue_count+=1
-
+	file.close()
 	return BOW,unqiue_count
 
 def create_dictionary(in_path,out_path):
@@ -30,7 +30,9 @@ def read_dictionary(in_path):
 	for i,line in  enumerate(in_file):
 		word = line.split()
 		_dictionary[word[0]] = i
+	in_file.close()
 	return _dictionary
+
 
 def get_unknown_words(BOW,dictionary):	
 	unk=[]
@@ -48,18 +50,34 @@ def create_training_glove(BOW,in_path,out_path):
 		words = line.split()
 		if(words[0] in BOW):
 			out_file.write(line)
+	in_file.close()
+	out_file.close()
+
+
+
+def read_glove (input):
+	glove = []
+	in_file = open(input, "r")
+	X = in_file.readlines()
+	for i, X_line in enumerate(X):
+		X_line = X_line.strip()
+		X_line = X_line.split(' ')
+		glove.append(X_line)
+	return glove
+	in_file.close()
+
 
 
 if __name__ == "__main__":
 		glove=sys.argv[1]
 		dic=sys.argv[2]
-		train=sys.argv[3]
-		test=sys.argv[4]
-		train_glove  =sys.argv[5]
-		#create_dictionary(glove,dic)
-		dictionary = read_dictionary(dic)
-		BOW1,count= bag_of_words(train)
-		create_training_glove(BOW1,glove,train_glove) 
+		#train=sys.argv[3]
+		#test=sys.argv[4]
+		#train_glove  =sys.argv[5]
+		create_dictionary(glove,dic)
+		#dictionary = read_dictionary(dic)
+		#BOW1,count= bag_of_words(train)
+		#create_training_glove(BOW1,glove,train_glove) 
 		#BOW2,count= bag_of_words(test)
 		#print count
 		#unknown ,  unknown_count= get_unknown_words(BOW2,dictionary)
