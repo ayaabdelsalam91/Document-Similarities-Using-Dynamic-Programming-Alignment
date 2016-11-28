@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy
-
+#Comment
 def process_line(s, dim):
     s = s.strip()
     char = s[0].upper()
