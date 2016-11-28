@@ -63,8 +63,8 @@ def read_glove (input):
 		X_line = X_line.strip()
 		X_line = X_line.split(' ')
 		glove.append(X_line)
-	return glove
 	in_file.close()
+	return glove
 
 
 
