@@ -17,7 +17,7 @@ def read_data(input):
 	return labels,texts
 	in_file.close()
 
-
+	
 def DocToDoc_Similarity(text):
 	result=[]
 	categories = ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']

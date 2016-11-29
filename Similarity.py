@@ -39,13 +39,13 @@ if __name__ == "__main__":
 	dictionary = read_dictionary(dic)
 	glove= read_glove(_glove)
 	tic = time.time()
-	s= get_similarity_from_glove("a","cat",dictionary,glove)
+	s= get_similarity_from_glove("mahhhjgjhth","cat",dictionary,glove)
 	toc = time.time()
 	print s
 	print('Processing time: %r'
            % (toc - tic))
 	tic = time.time()
-	s= get_similarity_from_wordnet('cat','a')
+	s= get_similarity_from_wordnet('cat','mahhhjgjhth')
 	toc = time.time()
 	print('Processing time: %r'
            % (toc - tic))
