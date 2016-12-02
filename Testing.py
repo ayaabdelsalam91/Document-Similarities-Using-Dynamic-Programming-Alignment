@@ -29,8 +29,7 @@ def DocToDoc_Similarity(text,categories):
 		for i in range(0, len(categories) ):
 			count+=1
 			print count
-			
-			 = randint(i*50, i*50+49)
+			index = randint(i*50, i*50+49)
 			DPResult= DP(example,text[index])
 			if(DPResult>max):
 				max = DPResult
@@ -63,11 +62,17 @@ def DP(Doc1,Doc2):
             tic = time.time()
             score2 = table[i-1, j-1]+get_similarity_from_glove(s1[i-1], s2[j-1], glove, dictionary)
             toc = time.time()
+
+            print ("time for glove similarity: %r" % (toc-tic))
             score3 = table[i-1, j] + p_gap
             table[i, j] = max(score1, score2, score3)
 
     score = table[len1-1, len2-1]
     toc = time.time()
+
+    print('Processing time: %r'
+           % (toc - tic))
+    exit(0)
     return score
 	# return global_alignment(Doc1, Doc2, get_similarity_from_glove, glove, dictionary, p_gap)
 
@@ -92,6 +97,7 @@ if __name__ == "__main__":
 		label ,  text = read_data(test)
 		print len(text)
 		tic = time.time()
+
 		categories = ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
 		result = DocToDoc_Similarity(text,categories)
 

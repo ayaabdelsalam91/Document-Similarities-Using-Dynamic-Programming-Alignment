@@ -1,4 +1,5 @@
 import sys
+<<<<<<< HEAD
 import math
 
 def _cosine_similarity(v1,v2):
@@ -31,6 +32,7 @@ def bag_of_words(path):
 				BOW[word.lower()] += 1
 			else:
 				BOW[word.lower()] = 1
+
 				unqiue_count+=1
 	file.close()
 	return BOW,unqiue_count
@@ -53,6 +55,7 @@ def read_dictionary(in_path):
 		_dictionary[word[0]] = i
 	in_file.close()
 	return _dictionary
+
 
 def get_unknown_words(BOW,dictionary):	
 	unk=[]
@@ -84,7 +87,6 @@ def read_glove (input):
 		glove.append(X_line)
 	in_file.close()
 	return glove
-
 
 def blosum_construction (input, output):
 	in_file = open(input, "r")
@@ -122,8 +124,3 @@ if __name__ == "__main__":
 		#BOW2,count= bag_of_words(test)
 		#print BOW2
 		#create_training_glove(BOW2,glove,test_glove) 
-		#print count
-		#unknown ,  unknown_count= get_unknown_words(BOW2,dictionary)
-		#print unknown_count
-		#print unknown
-        #bag_of_words(path)

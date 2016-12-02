@@ -11,6 +11,7 @@ def create_dataset(input,output,count,average,categories):
 				categories[label]+=1
 				#print example
 				out_file.write(example)
+<<<<<<< HEAD
 	in_file.close()
 	out_file.close()
 
@@ -31,13 +32,22 @@ def rearrange_dataset(input,output,categories):
 	out_file.close()	
 
 
+=======
+
+	in_file.close()
+	out_file.close()
+
+>>>>>>> 5d7d16e75bc75235fc25b96690091ff292cef806
 def read_dataset(input):
 	file = open(input, "r")
 	labels = dict()
 	for example in file:
 		#print example
 		label, text = example.strip().split('\t')
+<<<<<<< HEAD
 		print label
+=======
+>>>>>>> 5d7d16e75bc75235fc25b96690091ff292cef806
 		if label in labels:
 			labels[label] += 1
 		else:
@@ -63,6 +73,7 @@ if __name__ == "__main__":
     # reading, tokenizing, and normalizing data
     test_input=sys.argv[1]
 	#train_output=sys.argv[2]
+<<<<<<< HEAD
 	#test_input = sys.argv[3]
     test_output = sys.argv[2]
     #categories= dict.fromkeys( ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast'] , 0 )
@@ -70,17 +81,32 @@ if __name__ == "__main__":
     #categories= dict.fromkeys( ['earn', 'money-fx', 'trade', 'acq','crude'] , 0 )
     categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
     rearrange_dataset(test_input,test_output,categories)
+=======
+	# test_input = sys.argv[3]
+    test_output = sys.argv[2]
+    #categories= dict.fromkeys( ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast'] , 0 )
+    #categories= dict.fromkeys( ['project', 'course', 'student', 'sci.crypt','faculty'] , 0 )
+    categories= dict.fromkeys( ['earn', 'money-fx', 'trade', 'acq','crude'] , 0 )
+>>>>>>> 5d7d16e75bc75235fc25b96690091ff292cef806
 
     #{'earn': 1083, 'money-fx': 87, 'trade': 75, 'acq': 696, 'grain': 10, 'interest': 81, 'crude': 121, 'ship': 36}
     #{'earn': 2840, 'money-fx': 206, 'trade': 251, 'acq': 1596,  'crude': 253, 'ship': 108}
  #    create_dataset(train_input,train_output,400)
  #    labelsTrain = read_dataset(train_output)
  #    print labelsTrain
+<<<<<<< HEAD
     #create_dataset(test_input,test_output,50,500,categories)
     labels  = read_dataset(test_output)
     avg  = get_average_size(test_output )
     print labels
     #print avg
+=======
+    create_dataset(test_input,test_output,50,1000,categories)
+    labels  = read_dataset(test_output)
+    avg  = get_average_size(test_output )
+    print labels
+    print avg
+>>>>>>> 5d7d16e75bc75235fc25b96690091ff292cef806
 
 
 	#labelsTest = read_dataset(test_output)
