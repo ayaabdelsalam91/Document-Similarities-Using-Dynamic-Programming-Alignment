@@ -23,14 +23,14 @@ def local_extension(s1, s2, sim_fun, p_gap):
                 score2 = table[i-1, j-1]+sim_fun(s1[i-1], s2[j-1])
                 score3 = table[i-1, j] + p_gap
                 table[i, j] = max(score1, score2, score3)
-                new_scores.append(talbe[i, j])
+                new_scores.append(table[i, j])
         if i < len2:
             for j in range(1, min(i, len1)):
                 score1 = table[j, i-1] + p_gap
                 score2 = table[j-1, i-1]+sim_fun(s1[i-1], s2[j-1])
                 score3 = table[j-1, i] + p_gap
                 table[j, i] = max(score1, score2, score3)
-                new_scores.append(talbe[i, j])
+                new_scores.append(table[i, j])
         if i < len1 and i < len2:
             score1 = table[i, i-1] + p_gap
             score2 = table[i-1, i-1]+sim_fun(s1[i-1], s2[i-1])
@@ -74,10 +74,7 @@ def bigram_alignment(s1, s2, pos1, pos2, sim_fun, p_gap):
     return max_score
 
 def local_heuristics(s1, s2, sim_fun, p_gap, transformer):
-    print s1
-    print s2
     bigram_list = bigram.get_bigram([s1, s2])
-    print bigram_list
     bigram_s1 = bigram_list[0].split(' ')
     bigram_s2 = bigram_list[1].split(' ')
     # tfidf = transformer.transform(bigram_list)
@@ -95,7 +92,6 @@ def local_heuristics(s1, s2, sim_fun, p_gap, transformer):
     for i in range(len(bigram_s1)):
         if flags[i] != 0:
             continue
-        print '**'
         pos1 = []
         pos2 = []
         for j in range(len(bigram_s1)):
@@ -111,7 +107,7 @@ def local_heuristics(s1, s2, sim_fun, p_gap, transformer):
         if len(pos2) > 0:
             score += bigram_alignment(s1, s2, pos1, pos2, sim_fun, p_gap)
             count += 1
-    if count == 0:
+    if count == 0 or count == 1:
         score = local_alignment(s1, s2, sim_fun, p_gap)
     return score
 
@@ -122,4 +118,4 @@ if __name__ == "__main__":
     bigram_texts = bigram.get_bigram(texts)
     transformer = bigram.tf_idf(bigram_texts)
     p_gap = -0.5
-    print local_heuristics(texts[0], texts[1], Similarity.get_similarity_from_wordnet, p_gap, transformer)
+    print local_heuristics(texts[0], texts[2], Similarity.get_similarity_from_wordnet, p_gap, transformer)
