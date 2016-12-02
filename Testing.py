@@ -72,7 +72,6 @@ def DP(Doc1,Doc2):
 
     print('Processing time: %r'
            % (toc - tic))
-    exit(0)
     return score
 	# return global_alignment(Doc1, Doc2, get_similarity_from_glove, glove, dictionary, p_gap)
 
@@ -98,6 +97,11 @@ if __name__ == "__main__":
 		print len(text)
 		tic = time.time()
 
+		categories = ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
+		result = DocToDoc_Similarity(text,categories)
+
+
+		#testing
 		categories = ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
 		result = DocToDoc_Similarity(text,categories)
 
