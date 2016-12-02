@@ -1,5 +1,4 @@
 import sys
-<<<<<<< HEAD
 import math
 
 def _cosine_similarity(v1,v2):
