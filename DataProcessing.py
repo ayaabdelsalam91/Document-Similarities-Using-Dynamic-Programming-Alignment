@@ -73,7 +73,7 @@ if __name__ == "__main__":
     #categories= dict.fromkeys( ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast'] , 0 )
     #categories= dict.fromkeys( ['project', 'course', 'student', 'sci.crypt','faculty'] , 0 )
     categories= dict.fromkeys( ['earn', 'money-fx', 'trade', 'acq','crude'] , 0 )
-
+    #testing 2
     #create_dataset(test_input,test_output,50,500,categories)
     labels  = read_dataset(test_output)
     avg  = get_average_size(test_output )
