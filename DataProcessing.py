@@ -63,8 +63,8 @@ if __name__ == "__main__":
 	#train_output=sys.argv[2]
 	#test_input = sys.argv[3]
     test_output = sys.argv[1]
-    #categories= dict.fromkeys( ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast'] , 0 )
-    categories= dict.fromkeys( ['project', 'course', 'student','faculty'] , 0 )
+    categories= dict.fromkeys( ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast'] , 0 )
+    #categories= dict.fromkeys( ['project', 'course', 'student','faculty'] , 0 )
     #categories= dict.fromkeys( ['earn', 'money-fx', 'trade', 'acq','crude'] , 0 )
     #categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
     #rearrange_dataset(test_input,test_output,categories)

@@ -18,6 +18,13 @@ def normalized(OldMin,OldMax,NewMin,NewMax,OldValue):
 	return NewValue
 
 
+def removeStopwords(sentence,Stopwords):
+	output=[]
+	for word in sentence:
+		if word not in Stopwords:
+			output.append(word)
+	return output
+
 def bag_of_words(path):
 	file = open(path, "r")
 	BOW = dict()
