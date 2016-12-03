@@ -71,7 +71,6 @@ def create_training_glove(BOW,in_path,out_path):
 	for line in in_file:
 		words = line.split()
 		if(words[0] in BOW):
-			print words[0]
 			out_file.write(line)
 	in_file.close()
 	out_file.close()
@@ -110,16 +109,18 @@ def blosum_construction (input, output):
 
 if __name__ == "__main__":
 		glove=sys.argv[1]
-		blosum=sys.argv[2]
-		blosum_construction (glove,blosum)
-		#dic=sys.argv[2]
+		#blosum=sys.argv[2]
+		#blosum_construction (glove,blosum)
+		dic=sys.argv[2]
 		#train=sys.argv[3]
-		#test=sys.argv[2]
-		#test_glove  =sys.argv[3]
-		#create_dictionary(test_glove,dic)
+		#
+		test_glove  =sys.argv[3]
+		test=sys.argv[4]
+		
 		#dictionary = read_dictionary(dic)
 		#BOW1,count= bag_of_words(train)
 		#
-		#BOW2,count= bag_of_words(test)
-		#print BOW2
-		#create_training_glove(BOW2,glove,test_glove) 
+		BOW2,count= bag_of_words(test)
+		print BOW2
+		create_training_glove(BOW2,glove,test_glove) 
+		create_dictionary(test_glove,dic)

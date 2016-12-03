@@ -29,7 +29,6 @@ def _cosine_similarity(v1,v2):
     return sumxy/math.sqrt(sumxx*sumyy)
 
 def get_similarity_from_glove(word1,word2,dictionary,glove):
-    # print word1
     if(word1 == word2):
         return 1
     if(word1 in dictionary) and (word2 in dictionary):
@@ -40,6 +39,8 @@ def get_similarity_from_glove(word1,word2,dictionary,glove):
         s=_cosine_similarity( X_vector, Y_vector)
     else:
         s=-1
+    # if(s!=-1):
+    #     print word1 , word2 , s
     return s
 
 def global_alignment(s1, s2, sim_fun, glove, dictionary, p_gap):

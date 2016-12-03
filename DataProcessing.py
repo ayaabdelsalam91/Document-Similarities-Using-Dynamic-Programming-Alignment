@@ -59,31 +59,31 @@ def get_average_size(input):
 if __name__ == "__main__":
     
     # reading, tokenizing, and normalizing data
-    test_input=sys.argv[1]
+    #test_input=sys.argv[1]
 	#train_output=sys.argv[2]
 	#test_input = sys.argv[3]
-    test_output = sys.argv[2]
+    test_output = sys.argv[1]
     #categories= dict.fromkeys( ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast'] , 0 )
-    #categories= dict.fromkeys( ['project', 'course', 'student','faculty'] , 0 )
+    categories= dict.fromkeys( ['project', 'course', 'student','faculty'] , 0 )
     #categories= dict.fromkeys( ['earn', 'money-fx', 'trade', 'acq','crude'] , 0 )
-    categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
-    rearrange_dataset(test_input,test_output,categories)
+    #categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
+    #rearrange_dataset(test_input,test_output,categories)
 	# test_input = sys.argv[3]
-    test_output = sys.argv[2]
+    #test_output = sys.argv[2]
     #categories= dict.fromkeys( ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast'] , 0 )
     #categories= dict.fromkeys( ['project', 'course', 'student', 'sci.crypt','faculty'] , 0 )
-    categories= dict.fromkeys( ['earn', 'money-fx', 'trade', 'acq','crude'] , 0 )
+    #categories= dict.fromkeys( ['earn', 'money-fx', 'trade', 'acq','crude'] , 0 )
     #testing 2
     #create_dataset(test_input,test_output,50,500,categories)
     labels  = read_dataset(test_output)
     avg  = get_average_size(test_output )
     print labels
-    #print avg
-    create_dataset(test_input,test_output,50,1000,categories)
-    labels  = read_dataset(test_output)
-    avg  = get_average_size(test_output )
-    print labels
     print avg
+    # create_dataset(test_input,test_output,50,1000,categories)
+    # labels  = read_dataset(test_output)
+    # avg  = get_average_size(test_output )
+    # print labels
+    # print avg
 
 
 
