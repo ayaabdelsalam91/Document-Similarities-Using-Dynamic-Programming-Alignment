@@ -14,10 +14,12 @@ def get_dataset(fname):
     label_set = ['original', '25', '50', '75']
     labels = []
     texts = []
+    count = 0
     for line in f:
-        label, content = line.split('\t')
-        labels.append(label.strip())
-        texts.append(content.strip())
+        if line.strip() == '':
+            continue
+        texts.append(line.strip())
+        labels.append(label_set[count%4])
     return labels, texts
 
 def get_label_instances(labels):

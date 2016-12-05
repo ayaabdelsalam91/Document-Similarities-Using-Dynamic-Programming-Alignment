@@ -46,47 +46,47 @@ def local_extension(s1, s2, sim_fun, p_gap):
             break
     return max_score
 
-def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_glove_flag =  None):
-    # tic = time.time()
-    s1 = s1.lower()
-    s2 = s2.lower()
-    # len1 = len(s1)+1
-    # len2 = len(s2)+1
-    # # print len1, len2
-    s1 = s1.split(' ')
-    s2 = s2.split(' ')
-    if(remove_stopword_flag):
-        s1 = removeStopwords(s1)
-        s2 = removeStopwords(s2)
-    len1 = len(s1)+1
-    len2 = len(s2)+1
+# def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_glove_flag =  None):
+#     # tic = time.time()
+#     s1 = s1.lower()
+#     s2 = s2.lower()
+#     # len1 = len(s1)+1
+#     # len2 = len(s2)+1
+#     # # print len1, len2
+#     s1 = s1.split(' ')
+#     s2 = s2.split(' ')
+#     if(remove_stopword_flag):
+#         s1 = removeStopwords(s1)
+#         s2 = removeStopwords(s2)
+#     len1 = len(s1)+1
+#     len2 = len(s2)+1
 
-    table = numpy.zeros([len1, len2])
+#     table = numpy.zeros([len1, len2])
 
-    for i in range(1, len1):
-        for j in range(1, len2):
-            score1 = table[i, j-1] + p_gap
-            if(similarity_type == 1):
-                if(two_glove_flag):
-                    score2 = table[i-1, j-1]+normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
-                else:
-                    score2 = table[i-1, j-1]+normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
-            else:
-                wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
-                if wordnet_score == -1 : 
-                    wordnet_score = 0
-                score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
+#     for i in range(1, len1):
+#         for j in range(1, len2):
+#             score1 = table[i, j-1] + p_gap
+#             if(similarity_type == 1):
+#                 if(two_glove_flag):
+#                     score2 = table[i-1, j-1]+normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
+#                 else:
+#                     score2 = table[i-1, j-1]+normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
+#             else:
+#                 wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
+#                 if wordnet_score == -1 : 
+#                     wordnet_score = 0
+#                 score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
 
-            #score2 = table[i-1, j-1]+sim_fun(s1[i-1], s2[j-1])
-            score3 = table[i-1, j] + p_gap
-            table[i, j] = max(score1, score2, score3)
+#             #score2 = table[i-1, j-1]+sim_fun(s1[i-1], s2[j-1])
+#             score3 = table[i-1, j] + p_gap
+#             table[i, j] = max(score1, score2, score3)
 
-    score = table.max()
-    # toc = time.time()
-    # print('Processing time: %r'
-    #        % (toc - tic))
+#     score = table.max()
+#     # toc = time.time()
+#     # print('Processing time: %r'
+#     #        % (toc - tic))
 
-    return score
+#     return score
 
 def bigram_alignment(s1, s2, pos1, pos2, sim_fun, p_gap):
     max_score = 0
