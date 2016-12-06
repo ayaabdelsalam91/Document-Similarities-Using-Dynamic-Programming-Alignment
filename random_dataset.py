@@ -164,5 +164,5 @@ if __name__ == "__main__":
     # selected_fids = select_news(raw_fname, min_len, max_len, stopwords)
     # print len(selected_fids)
     # print selected_fids
-    # BOW_and_freq(raw_fname, raw_bow)
+    # BOW_and_freq(raw_fname, raw_bow_freq)
     fuzz_articles(raw_fname, processed_fname, raw_bow_freq, proportion=[0.25, 0.5, 0.75])
