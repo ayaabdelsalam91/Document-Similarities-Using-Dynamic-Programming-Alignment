@@ -277,10 +277,12 @@ if __name__ == "__main__":
     	categories = ['earn', 'money-fx', 'trade', 'acq','crude']
     	print "earn"
     elif (categories_flag == '3'):
-        categories = ['surprise.SMTnews', 'SMTeuroparl', ]
+        categories = ['project', 'course', 'student','faculty']
+        print "project"
     else:
-    	categories = ['project', 'course', 'student','faculty']
-    	print "project"
+        categories = ['surprise.SMTnews', 'MSRpar', 'SMTeuroparl']
+        print 'surprise.SMTnews'
+    	
 
     tic = time.time()
     result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)

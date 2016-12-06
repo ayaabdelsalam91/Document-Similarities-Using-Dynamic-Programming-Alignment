@@ -9,8 +9,8 @@ import numpy
 from sklearn.feature_extraction.text import CountVectorizer
 #Comment
 
-max_len = 600
-min_len = 400
+max_len = 200
+min_len = 80
 
 def get_wordlist(fname):
     f = open(fname)
@@ -56,7 +56,7 @@ def write_to_file(articles, output_name):
     f.close()
 
 
-def select_news(output_name, min_len, max_len, stopwords):
+def select_news(output_name, min_len, max_len, max_article_num, stopwords):
     fids = reuters.fileids()
     selected = []
     selected_fids = []
@@ -66,13 +66,15 @@ def select_news(output_name, min_len, max_len, stopwords):
         word_num = sum([len(sen) for sen in content])
         if word_num < min_len:
             continue
-        count += 1
         content = process_raw(content, stopwords)
         word_num = sum([len(sen) for sen in content])
         if word_num < min_len or word_num > max_len:
             continue
+        count += 1
         selected.append(content)
         selected_fids.append(fid)
+        if count >= max_article_num:
+            break
     write_to_file(selected, output_name)
     print count
     return selected_fids
@@ -160,9 +162,10 @@ if __name__ == "__main__":
     raw_bow_freq = 'reuters_freq.txt'
     processed_fname = 'reuters_processed.txt'
     stopwords = get_wordlist('Stopwords.txt')
-    # puncts = get_wordlist('punctuations.txt')
-    # selected_fids = select_news(raw_fname, min_len, max_len, stopwords)
-    # print len(selected_fids)
-    # print selected_fids
-    # BOW_and_freq(raw_fname, raw_bow_freq)
+    max_article_num = 100
+    puncts = get_wordlist('punctuation.txt')
+    selected_fids = select_news(raw_fname, min_len, max_len, max_article_num, stopwords)
+    print len(selected_fids)
+    print selected_fids
+    BOW_and_freq(raw_fname, raw_bow_freq)
     fuzz_articles(raw_fname, processed_fname, raw_bow_freq, proportion=[0.25, 0.5, 0.75])

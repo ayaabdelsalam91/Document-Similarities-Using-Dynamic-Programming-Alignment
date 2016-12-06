@@ -9,8 +9,8 @@ import numpy
 from sklearn.feature_extraction.text import CountVectorizer
 #Comment
 
-max_len = 300
-min_len = 100
+max_len = 200
+min_len = 80
 
 def get_wordlist(fname):
     f = open(fname)
@@ -116,9 +116,4 @@ if __name__ == "__main__":
     raw_fname = 'reuters_with_puc.txt'
     raw_bow_freq = 'reuters_punc_freq.txt'
     stopwords = get_wordlist('Stopwords.txt')
-    # puncts = get_wordlist('punctuations.txt')
     selected_fids = select_news(raw_fname, ['earn', 'money-fx', 'trade', 'acq','crude'], 50, min_len, max_len, stopwords)
-    # print len(selected_fids)
-    # print selected_fids
-    # BOW_and_freq(raw_fname, raw_bow_freq)
-    # fuzz_articles(raw_fname, processed_fname, raw_bow_freq, proportion=[0.25, 0.5, 0.75])
