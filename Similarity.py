@@ -11,22 +11,22 @@ def get_similarity_from_wordnet(word1,word2):
     wordFromList1 = wordnet.synsets(word1)
     wordFromList2 = wordnet.synsets(word2)
     if wordFromList1 and wordFromList2:
-        s = 0
-        count = 0
-        # s = wordFromList1[0].wup_similarity(wordFromList2[0])
-        for synset1 in wordFromList1:
-            for synset2 in wordFromList2:
-                if synset1.wup_similarity(synset2):
-                    s += synset1.wup_similarity(synset2)
-                    count += 1
-        if count == 0:
-            s = -1
-        else:
-            s = s/len(wordFromList1)/len(wordFromList2)
+        # s = 0
+        # count = 0
+        s = wordFromList1[0].wup_similarity(wordFromList2[0])
+        # for synset1 in wordFromList1:
+        #     for synset2 in wordFromList2:
+        #         if synset1.wup_similarity(synset2):
+        #             s += synset1.wup_similarity(synset2)
+        #             count += 1
+        # if count == 0:
+        #     s = -1
+        # else:
+        #     s = s/count
     else:
     	s=-1
-    # if s== None:
-    #     s=-1
+    if s== None:
+        s=-1
     return s
 
 def _cosine_similarity(v1,v2):
