@@ -268,21 +268,23 @@ if __name__ == "__main__":
     
     dictionary = read_dictionary(dic)
     glove = read_glove(_glove)
-    # label ,  text = read_data(test)
-    text = read_data_random(test)
+    label ,  text = read_data(test)
+    # text = read_data_random(test)
     if(categories_flag == '1'):
     	categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
     	print "graphics"
     elif (categories_flag == '2'):
     	categories = ['earn', 'money-fx', 'trade', 'acq','crude']
     	print "earn"
+    elif (categories_flag == '3'):
+        categories = ['surprise.SMTnews', 'SMTeuroparl', ]
     else:
     	categories = ['project', 'course', 'student','faculty']
     	print "project"
 
     tic = time.time()
-    # result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
-    result = DocToDoc_Similarity_Random(text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
+    result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
+    # result = DocToDoc_Similarity_Random(text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
     correct_answer = range(1, len(text), 4)
 
 

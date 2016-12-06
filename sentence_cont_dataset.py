@@ -45,14 +45,17 @@ def split_data(labels):
     return all_labels, label_idxs
 
 
-def get_dataset(fpath, output_path, len_of_doc):
+def get_dataset(fpath, output_path, len_of_doc, num_of_doc):
     labels, texts = read_file(fpath)
     label_tokens, label_idxs = split_data(labels)
     fout = open(output_path, 'w')
     for label, idx_list in zip(label_tokens, label_idxs):
         pair_num = len(idx_list)
-        doc_num = int(pair_num/len_of_doc)
-        for i in range(doc_num):
+        possible_doc_num = int(pair_num/len_of_doc)
+        if possible_doc_num < num_of_doc/2:
+            print "We don't have enough similar pairs for label:", label
+            exit(0)
+        for i in range(num_of_doc):
             doc_str = label + '\t'
             selected_idxs = random.sample(idx_list, len_of_doc)
             for j in selected_idxs:
@@ -68,7 +71,7 @@ if __name__ == '__main__':
     prefix = '/Users/Dantong_Ji/Desktop/STS/datasets+scoring_script/train'
     output_path = 'sen_concatenate_corpus.txt'
     similar_pair_path = 'similar_pairs.txt'
-    text_files = [prefix+'/STS2012-en-test/STS.input.surprise.SMTnews.txt', prefix+'/STS2013-en-test/STS.input.FNWN.txt', prefix+'/STS2012-en-train/STS.input.SMTeuroparl.txt']
+    text_files = [prefix+'/STS2012-en-test/STS.input.surprise.SMTnews.txt', prefix+'/STS2012-en-test/STS.input.MSRpar.txt', prefix+'/STS2012-en-train/STS.input.SMTeuroparl.txt']
     score_files = [fname.replace('input', 'gs') for fname in text_files]
     get_similar_pairs(text_files, score_files, similar_pair_path)
-    get_dataset(similar_pair_path, output_path, 5)
+    get_dataset(similar_pair_path, output_path, 5, 50)
