@@ -59,7 +59,7 @@ def DocToDoc_Similarity(label, text,categories,remove_stopword_flag,alignment_ty
 			print "Right answer: "  , text[indexx]
 			print "Choosen answer: "  , text[indexofchoosen]
 
-		# 	# print "count kam isa? " ,  count
+			# print "count kam isa? " ,  count
 		# if(count > 50):
 		# 	break
 
@@ -67,7 +67,7 @@ def DocToDoc_Similarity(label, text,categories,remove_stopword_flag,alignment_ty
 
 	return result
 
-def DocToDoc_Similarity_Random(text, categories, remove_stopword_flag, alignment_type_flag, similarity_type, two_glove_flag):
+def DocToDoc_Similarity_Random(text, remove_stopword_flag, alignment_type_flag, similarity_type, two_glove_flag):
     result = []
     example_num = len(text)/4
     for i in range(example_num):
@@ -231,27 +231,27 @@ if __name__ == "__main__":
     Debug = False
 
     test = raw_input('Enter test path: ')
-    dic = raw_input('Enter dictionary path: ')
-    _glove = raw_input('Enter glove path: ')
-    double_glove_flag =  raw_input('Type True is you will be using 2 gloves: ')
-    if(double_glove_flag== 'True'):
-    	double_glove_flag =  True
-    	dic2=raw_input('Enter second dictionary path: ')
-    	_glove2= raw_input('Enter second glove path: ')
-    	secondary_dictionary =  read_dictionary(dic2)
-    	secondary_glove = read_glove(_glove2)
-    else:
-    	double_glove_flag = False
+    alignment_type_flag =raw_input('Type 1 for global_alignment and 2 for local_alignment: ')
+    similarity_type = raw_input('Type 1 for glove and 2 for wordnet: ')
+    if similarity_type == '1':
+        dic = raw_input('Enter dictionary path: ')
+        _glove = raw_input('Enter glove path: ')
+        double_glove_flag =  raw_input('Type True is you will be using 2 gloves: ')
+        if(double_glove_flag== 'True'):
+        	double_glove_flag =  True
+        	dic2=raw_input('Enter second dictionary path: ')
+        	_glove2= raw_input('Enter second glove path: ')
+        	secondary_dictionary =  read_dictionary(dic2)
+        	secondary_glove = read_glove(_glove2)
+        else:
+        	double_glove_flag = False
     remove_stopword_flag =raw_input('Type True is you will be want to remove stopwords: ')
     if(remove_stopword_flag == 'True'):
     	remove_stopword_flag = True
     	Stopwords = read_dictionary("Stopwords.txt")
     else:
     	remove_stopword_flag = False
-    categories_flag  =raw_input('Type category number: ')
-    print categories_flag
-    alignment_type_flag =raw_input('Type 1 for global_alignment and 2 for local_alignment: ')
-    similarity_type = raw_input('Type 1 for glove and 2 for wordnet: ')
+    
 
     # test=sys.argv[1]
     # dic=sys.argv[2]
@@ -265,36 +265,24 @@ if __name__ == "__main__":
     # similarity_type = sys.argv[10]
 
 
-    
-    dictionary = read_dictionary(dic)
-    glove = read_glove(_glove)
-    label ,  text = read_data(test)
-    # text = read_data_random(test)
-    if(categories_flag == '1'):
-    	categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
-    	print "graphics"
-    elif (categories_flag == '2'):
-    	categories = ['earn', 'money-fx', 'trade', 'acq','crude']
-    	print "earn"
-    elif (categories_flag == '3'):
-        categories = ['project', 'course', 'student','faculty']
-        print "project"
+    if similarity_type == '1':
+        dictionary = None
+        glove = None
     else:
-        categories = ['surprise.SMTnews', 'MSRpar', 'SMTeuroparl']
-        print 'surprise.SMTnews'
-    	
+        dictionary = read_dictionary(dic)
+        glove = read_glove(_glove)
+    label, text = read_data(test)
+    # text = read_data_random(test)
 
     tic = time.time()
-    result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
-    # result = DocToDoc_Similarity_Random(text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
-    # correct_answer = range(1, len(text), 4)
+    # result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
+    result = DocToDoc_Similarity_Random(text,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
+    correct_answer = range(1, len(text), 4)
 
 
     toc = time.time()
     print('Processing time: %r'
        % (toc - tic))
-    print label
-    print result
-    eval(label,result)
-    # eval(correct_answer, result)
+    # eval(label,result)
+    eval(correct_answer, result)
 		
