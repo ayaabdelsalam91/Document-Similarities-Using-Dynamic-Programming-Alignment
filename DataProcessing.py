@@ -48,8 +48,11 @@ def get_average_size(input):
 	total_size= 0
 	for example in in_file:
 		label, text = example.strip().split('\t')
+		text = text.strip().split(' ')
+		print len(text)
 		total_number+=1
 		total_size+= len(text)
+
 	return total_size/total_number
 
 
