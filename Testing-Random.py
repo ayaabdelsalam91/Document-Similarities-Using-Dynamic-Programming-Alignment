@@ -116,12 +116,10 @@ def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_g
 				if Debug: print "glove"
 				if(two_glove_flag):
 					if Debug: print "2 glove"
-					score2 = normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
-					score4 = table[i-1, j-1] +  score2
+					score2 =table[i-1, j-1] +  normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
 				else:
 					if Debug: print "1 glove"
-					score2 = normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
-					score4 = table[i-1, j-1]+ score2
+					score2 =   table[i-1, j-1]+ normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
 			else:
 				if Debug: print "wordnet"
 				wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
@@ -129,8 +127,8 @@ def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_g
 					wordnet_score = 0
 				score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
 
-            #score2 = table[i-1, j-1]+sim_fun(s1[i-1], s2[j-1])
-			score3 = table[i-1, j] + p_gap
+            score4  = 0
+            score3 = table[i-1, j] + p_gap
 			table[i, j] = max(score1, score2, score3 , score4)
 			if(table[i, j] ==score4):
 				Dtimes+=1
