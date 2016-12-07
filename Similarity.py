@@ -16,8 +16,9 @@ def get_similarity_from_wordnet(word1,word2):
         # s = wordFromList1[0].wup_similarity(wordFromList2[0])
         for synset1 in wordFromList1:
             for synset2 in wordFromList2:
-                if synset1.wup_similarity(synset2):
-                    s += synset1.wup_similarity(synset2)
+                temp = synset1.wup_similarity(synset2)
+                if temp:
+                    s += temp
                     count += 1
         if count == 0:
             s = -1
