@@ -280,7 +280,7 @@ if __name__ == "__main__":
         categories = ['project', 'course', 'student','faculty']
         print "project"
     else:
-        categories = ['surprise.SMTnews', 'MSRpar', 'SMTeuroparl']
+        categories = ['MSRpar', 'surprise.SMTnews', 'SMTeuroparl']
         print 'surprise.SMTnews'
     	
 
@@ -293,8 +293,6 @@ if __name__ == "__main__":
     toc = time.time()
     print('Processing time: %r'
        % (toc - tic))
-    print label
-    print result
     eval(label,result)
     # eval(correct_answer, result)
 		
