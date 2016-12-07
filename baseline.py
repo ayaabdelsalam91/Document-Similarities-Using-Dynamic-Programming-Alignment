@@ -67,7 +67,7 @@ def tf_transf(texts):
 
 if __name__ == "__main__":
     # f_train = sys.argv[1]
-    f_train = 'r8-test-500.txt'
+    f_train = 'sen_concatenate_corpus.txt'
     labels, texts = get_dataset(f_train)
     transformer = tf_transf(texts)
     label_instances = get_label_instances(labels)

@@ -17,7 +17,16 @@ def read_data(input):
 	return labels,texts
 	in_file.close()
 
-def DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag,similarity_type,two_glove_flag):
+def read_data_random(input):
+    f = open(input)
+    texts = []
+    for line in f:
+        if line.strip() != '':
+            texts.append(line.strip())
+    f.close()
+    return texts
+
+def DocToDoc_Similarity(label, text,categories,remove_stopword_flag,alignment_type_flag,similarity_type,two_glove_flag):
 	result=[]
 	count=0
 	for example in text:
@@ -50,13 +59,35 @@ def DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_typ
 			print "Right answer: "  , text[indexx]
 			print "Choosen answer: "  , text[indexofchoosen]
 
-			# print "count kam isa? " ,  count
-		if(count > 50):
-			break
+		# 	# print "count kam isa? " ,  count
+		# if(count > 50):
+		# 	break
 
 		result.append(categories[output])
 
 	return result
+
+def DocToDoc_Similarity_Random(text, categories, remove_stopword_flag, alignment_type_flag, similarity_type, two_glove_flag):
+    result = []
+    example_num = len(text)/4
+    for i in range(example_num):
+        example = text[4*i]
+        for j in range(1, 4):
+            if(alignment_type_flag == '1'):
+                if Debug: print "global"  
+                DPResult= global_alignment(example,text[4*i+j],remove_stopword_flag,similarity_type,two_glove_flag)
+            else:
+                if Debug: print "local"
+                DPResult=local_alignment(example,text[4*i+j], 0, remove_stopword_flag,similarity_type,two_glove_flag)
+            if (j == 1):
+                current_max = DPResult
+                current_idx = j
+            elif(DPResult>current_max):
+                current_max = DPResult
+                current_idx = j
+        result.append(4*i+current_idx)
+    return result
+
 
 def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_glove_flag):
 	# tic = time.time()
@@ -190,69 +221,80 @@ def eval(actual,test):
     print "%f%% (%d/%d)" % (float(correct)/total*100, correct, total)
 
 if __name__ == "__main__":
-		global Stopwords
-		global dictionary 
-		global secondary_dictionary
-		global glove
-		global secondary_glove
-		global Debug
-		#Debug = True
-		Debug = False
+    global Stopwords
+    global dictionary 
+    global secondary_dictionary
+    global glove
+    global secondary_glove
+    global Debug
+    #Debug = True
+    Debug = False
 
-		test = raw_input('Enter test path: ')
-		dic = raw_input('Enter dictionary path: ')
-		_glove = raw_input('Enter glove path: ')
-		double_glove_flag =  raw_input('Type True is you will be using 2 gloves: ')
-		if(double_glove_flag== 'True'):
-			double_glove_flag =  True
-			dic2=raw_input('Enter second dictionary path: ')
-			_glove2= raw_input('Enter second glove path: ')
-			secondary_dictionary =  read_dictionary(dic2)
-			secondary_glove = read_glove(_glove2)
-		else:
-			double_glove_flag = False
-		remove_stopword_flag =raw_input('Type True is you will be want to remove stopwords: ')
-		if(remove_stopword_flag == 'True'):
-			remove_stopword_flag = True
-			Stopwords = read_dictionary("Stopwords.txt")
-		else:
-			remove_stopword_flag = False
-		categories_flag  =raw_input('Type category number: ')
-		print categories_flag
-		alignment_type_flag =raw_input('Type 1 for global_alignment and 2 for local_alignment: ')
-		similarity_type = raw_input('Type 1 for glove and 2 for wordnet: ')
+    test = raw_input('Enter test path: ')
+    dic = raw_input('Enter dictionary path: ')
+    _glove = raw_input('Enter glove path: ')
+    double_glove_flag =  raw_input('Type True is you will be using 2 gloves: ')
+    if(double_glove_flag== 'True'):
+    	double_glove_flag =  True
+    	dic2=raw_input('Enter second dictionary path: ')
+    	_glove2= raw_input('Enter second glove path: ')
+    	secondary_dictionary =  read_dictionary(dic2)
+    	secondary_glove = read_glove(_glove2)
+    else:
+    	double_glove_flag = False
+    remove_stopword_flag =raw_input('Type True is you will be want to remove stopwords: ')
+    if(remove_stopword_flag == 'True'):
+    	remove_stopword_flag = True
+    	Stopwords = read_dictionary("Stopwords.txt")
+    else:
+    	remove_stopword_flag = False
+    categories_flag  =raw_input('Type category number: ')
+    print categories_flag
+    alignment_type_flag =raw_input('Type 1 for global_alignment and 2 for local_alignment: ')
+    similarity_type = raw_input('Type 1 for glove and 2 for wordnet: ')
 
-		# test=sys.argv[1]
-		# dic=sys.argv[2]
-		# _glove=sys.argv[3]
-		# dic2=sys.argv[4]
-		# _glove2=sys.argv[5]
-		# remove_stopword_flag =sys.argv[6] 
-		# categories_flag =  sys.argv[7]
-		# double_glove_flag = sys.argv[8]
-		# alignment_type_flag = sys.argv[9]
-		# similarity_type = sys.argv[10]
+    # test=sys.argv[1]
+    # dic=sys.argv[2]
+    # _glove=sys.argv[3]
+    # dic2=sys.argv[4]
+    # _glove2=sys.argv[5]
+    # remove_stopword_flag =sys.argv[6] 
+    # categories_flag =  sys.argv[7]
+    # double_glove_flag = sys.argv[8]
+    # alignment_type_flag = sys.argv[9]
+    # similarity_type = sys.argv[10]
 
 
-		
-		dictionary = read_dictionary(dic)
-		glove = read_glove(_glove)
-		label ,  text = read_data(test)
-		if(categories_flag == '1'):
-			categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
-			print "graphics"
-		elif (categories_flag == '2'):
-			categories = ['earn', 'money-fx', 'trade', 'acq','crude']
-			print "earn"
-		else:
-			categories = ['project', 'course', 'student','faculty']
-			print "project"
+    
+    dictionary = read_dictionary(dic)
+    glove = read_glove(_glove)
+    label ,  text = read_data(test)
+    # text = read_data_random(test)
+    if(categories_flag == '1'):
+    	categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
+    	print "graphics"
+    elif (categories_flag == '2'):
+    	categories = ['earn', 'money-fx', 'trade', 'acq','crude']
+    	print "earn"
+    elif (categories_flag == '3'):
+        categories = ['project', 'course', 'student','faculty']
+        print "project"
+    else:
+        categories = ['surprise.SMTnews', 'MSRpar', 'SMTeuroparl']
+        print 'surprise.SMTnews'
+    	
 
-		tic = time.time()
-		result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
+    tic = time.time()
+    result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
+    # result = DocToDoc_Similarity_Random(text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
+    # correct_answer = range(1, len(text), 4)
 
-		toc = time.time()
-		print('Processing time: %r'
-           % (toc - tic))
-		eval(label,result)
+
+    toc = time.time()
+    print('Processing time: %r'
+       % (toc - tic))
+    print label
+    print result
+    eval(label,result)
+    # eval(correct_answer, result)
 		

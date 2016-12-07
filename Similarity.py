@@ -11,11 +11,22 @@ def get_similarity_from_wordnet(word1,word2):
     wordFromList1 = wordnet.synsets(word1)
     wordFromList2 = wordnet.synsets(word2)
     if wordFromList1 and wordFromList2:
-    	s = wordFromList1[0].wup_similarity(wordFromList2[0])
+        s = 0
+        count = 0
+        # s = wordFromList1[0].wup_similarity(wordFromList2[0])
+        for synset1 in wordFromList1:
+            for synset2 in wordFromList2:
+                if synset1.wup_similarity(synset2):
+                    s += synset1.wup_similarity(synset2)
+                    count += 1
+        if count == 0:
+            s = -1
+        else:
+            s = s/count
     else:
     	s=-1
-    if s== None:
-        s=-1
+    # if s== None:
+    #     s=-1
     return s
 
 def _cosine_similarity(v1,v2):
@@ -51,6 +62,48 @@ def get_similarity_from_glove(word1,word2,dictionary,glove,Secondary_dictionary=
     # if(s!=-1):
     #     print word1 , word2 , s
     return s
+
+def get_sentence_similarity(FirstSentence,SecondSentence,Main_dictionary,Main_glove,dictionary,glove_dictionary):
+    table = string.maketrans("","")
+    FirstSentence = FirstSentence.lower()
+    SecondSentence = SecondSentence.lower()
+    FirstSentence = FirstSentence.split(' ')
+    SecondSentence = SecondSentence.split(' ')
+    len1 = len(FirstSentence)+1
+    len2 = len(SecondSentence)+1
+    FirstSentence_vector=[0] * 300
+    SecondSentence_vector=[0] *  300
+    num=0
+    for i in range(0, len1-1):
+        if(len(FirstSentence[i])>0):
+            FirstSentence[i] = FirstSentence[i].translate(table, string.punctuation)
+            # if(FirstSentence[i][-1] == '.' or FirstSentence[i][-1] == '?'):
+            #   FirstSentence[i]=FirstSentence[i][:-1]
+            vector = get_word_from_glove(FirstSentence[i],Main_dictionary,Main_glove,dictionary,glove_dictionary)
+            if(vector != -1 and vector !=[]):
+                num+=1
+                FirstSentence_vector = [FirstSentence_vector[j] + vector[j] for j in range(300)]
+    if(num > 1):
+        FirstSentence_vector = [FirstSentence_vector[j]/num for j in range(300)]
+    else:
+        print FirstSentence
+    num=0
+    for i in range(0, len2-1):
+        if(len(SecondSentence[i])>0):
+            SecondSentence[i] = SecondSentence[i].translate(table, string.punctuation)
+            # if(SecondSentence[i][-1] == '.' or SecondSentence[i][-1] == '?'):
+            #   SecondSentence[i]=SecondSentence[i][:-1]
+            vector = get_word_from_glove(SecondSentence[i],Main_dictionary,Main_glove,dictionary,glove_dictionary)
+            if(vector != -1 and vector !=[]):
+                num+=1
+                SecondSentence_vector = [SecondSentence_vector[j] + vector[j] for j in range(300)]
+    if(num > 1):
+        SecondSentence_vector = [SecondSentence_vector[j]/num for j in range(300)]
+    else:
+        print SecondSentence
+    similarity = _cosine_similarity(FirstSentence_vector,SecondSentence_vector)
+    # print similarity[0][0]
+    return normalized(-1,1,0,5,similarity)
 
 # def global_alignment(s1, s2, sim_fun, glove, dictionary, p_gap):
 #     tic = time.time()
