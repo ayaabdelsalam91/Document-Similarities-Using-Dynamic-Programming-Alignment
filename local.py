@@ -88,6 +88,7 @@ def local_extension(s1, s2, sim_fun, p_gap):
 
 #     return score
 
+
 def bigram_alignment(s1, s2, pos1, pos2, sim_fun, p_gap):
     max_score = 0
     for i in pos1:
@@ -135,62 +136,7 @@ def local_heuristics(s1, s2, sim_fun, p_gap, transformer):
         score = local_alignment(s1, s2, sim_fun, p_gap)
     return score
 
-def global_alignment(s1,s2,remove_stopword_flag,similarity_type , two_glove_flag =  None):
-    p_gap = 0
-    # tic = time.time()
-    s1 = s1.lower()
-    s2 = s2.lower()
-    # len1 = len(s1)+1
-    # len2 = len(s2)+1
-    # # print len1, len2
-    s1 = s1.split(' ')
-    s2 = s2.split(' ')
-    if(remove_stopword_flag):
-        s1 = removeStopwords(s1)
-        s2 = removeStopwords(s2)
-    len1 = len(s1)+1
-    len2 = len(s2)+1
-    table = numpy.zeros([len1, len2])
-    # print len1, len2
-    
-    for i in range(len2):
-        table[0, i] = i*p_gap;
-    for i in range(len1):
-        table[i, 0] = i*p_gap;
-    # Gaptimes=0
-    # Dtimes = 0
-    for i in range(1, len1):
-        for j in range(1, len2):
-            score1 = table[i, j-1] + p_gap  
-            # tic = time.time()
-            if(similarity_type == 1):
-                if(two_glove_flag):
-                    score2 = table[i-1, j-1]+normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
-                else:
-                    score2 = table[i-1, j-1]+normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
-            else:
-                wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
-                if wordnet_score == -1 : 
-                    wordnet_score = 0
-                score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
-            # toc = time.time()
-            #print ("time for glove similarity: %r" % (toc-tic))
-            score3 = table[i-1, j] + p_gap
-            table[i, j] = max(score1, score2, score3)
-    #         if(table[i, j] ==score2 ):
-    #           Dtimes+=1
-    #         else:
-    #           Gaptimes+=1
 
-
-    # print "Dtimes, Gaptimes : " , Dtimes, Gaptimes
-    score = table[len1-1, len2-1]
-    # toc = time.time()
-
-    # print('Processing time: %r'
-    #        % (toc - tic))
-    return score
-    # return global_alignment(Doc1, Doc2, get_similarity_from_glove, glove, dictionary, p_gap)
 
 
 if __name__ == "__main__":
