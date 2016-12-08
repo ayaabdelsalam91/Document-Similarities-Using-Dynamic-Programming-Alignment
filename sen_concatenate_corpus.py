@@ -4,6 +4,7 @@
 
 import sys
 import random
+import copy
 
 def get_similar_pairs(text_files, score_files, output_path):
     foutput = open(output_path, 'w')
@@ -57,11 +58,13 @@ def get_dataset(fpath, output_path, len_of_doc, num_of_doc):
         for i in range(num_of_doc):
             doc_str1 = ''
             doc_str2 = ''
-            selected_idxs = random.sample(idx_list, len_of_doc)
-            for j in selected_idxs:
+            selected_idxs1 = random.sample(idx_list, len_of_doc)
+            selected_idxs2 = copy.copy(selected_idxs1)
+            random.shuffle(selected_idxs1)
+            for j, k in zip(selected_idxs1, selected_idxs2):
                 doc_str1 += texts1[j].strip()
                 doc_str1 += '\t'
-                doc_str2 += texts2[j].strip()
+                doc_str2 += texts2[k].strip()
                 doc_str2 += '\t'
             doc_str1 = doc_str1.strip() + '\n'
             doc_str2 = doc_str2.strip() + '\n\n'
