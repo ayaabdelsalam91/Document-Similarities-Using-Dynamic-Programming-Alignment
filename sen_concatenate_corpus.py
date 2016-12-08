@@ -4,6 +4,7 @@
 
 import sys
 import random
+import copy
 
 def get_similar_pairs(text_files, score_files, output_path):
     foutput = open(output_path, 'w')
@@ -20,20 +21,19 @@ def get_similar_pairs(text_files, score_files, output_path):
 def read_file(fpath):
     f = open(fpath)
     labels = []
-    # texts1 = []
-    # texts2 = []
-    texts = []
+    texts1 = []
+    texts2 = []
+    # texts = []
     scores = []
     for line in f:
         label, t1, t2, score = line.strip().split('\t')
         labels.append(label.strip())
-        labels.append(label.strip())
-        # texts1.append(t1.strip())
-        # texts2.append(t2.strip())
-        texts.append(t1.strip())
-        texts.append(t2.strip())
+        texts1.append(t1.strip())
+        texts2.append(t2.strip())
+        # texts.append(t1.strip())
+        # texts.append(t2.strip())
         # scores.append(float(score))
-    return labels, texts
+    return labels, texts1, texts2
 
 def split_data(labels):
     all_labels = list(set(labels))
@@ -44,9 +44,8 @@ def split_data(labels):
         label_idxs[all_labels.index(label)].append(idx)
     return all_labels, label_idxs
 
-
 def get_dataset(fpath, output_path, len_of_doc, num_of_doc):
-    labels, texts = read_file(fpath)
+    labels, texts1, texts2 = read_file(fpath)
     label_tokens, label_idxs = split_data(labels)
     fout = open(output_path, 'w')
     for label, idx_list in zip(label_tokens, label_idxs):
@@ -54,18 +53,22 @@ def get_dataset(fpath, output_path, len_of_doc, num_of_doc):
         possible_doc_num = int(pair_num/len_of_doc)
         if possible_doc_num < num_of_doc/2:
             print "We don't have enough similar pairs for label:", label
+            print pair_num
             exit(0)
         for i in range(num_of_doc):
-            doc_str = label + '\t'
-            selected_idxs = random.sample(idx_list, len_of_doc)
-            for j in selected_idxs:
-                doc_str += texts[j].strip()
-                if doc_str[-1] == '.' or doc_str[-1] == '?' or doc_str[-1] == '!':
-                    doc_str += ' '
-                else:
-                    doc_str += '. '
-            doc_str = doc_str.strip() + '\n'
-            fout.write(doc_str)
+            doc_str1 = ''
+            doc_str2 = ''
+            selected_idxs1 = random.sample(idx_list, len_of_doc)
+            selected_idxs2 = copy.copy(selected_idxs1)
+            random.shuffle(selected_idxs1)
+            for j, k in zip(selected_idxs1, selected_idxs2):
+                doc_str1 += texts1[j].strip()
+                doc_str1 += '\t'
+                doc_str2 += texts2[k].strip()
+                doc_str2 += '\t'
+            doc_str1 = doc_str1.strip() + '\n'
+            doc_str2 = doc_str2.strip() + '\n\n'
+            fout.write(doc_str1+doc_str2)
 
 if __name__ == '__main__':
     prefix = '/Users/Dantong_Ji/Desktop/STS/datasets+scoring_script/train'

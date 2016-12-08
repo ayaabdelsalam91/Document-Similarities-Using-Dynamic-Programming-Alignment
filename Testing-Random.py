@@ -70,9 +70,12 @@ def DocToDoc_Similarity(label, text,categories,remove_stopword_flag,alignment_ty
 def DocToDoc_Similarity_Random(text, remove_stopword_flag, alignment_type_flag, similarity_type, two_glove_flag):
     result = []
     example_num = len(text)/4
+    print 'Document_num =', example_num
     for i in range(example_num):
         example = text[4*i]
+        print 'Doc #', (i+1)
         for j in range(1, 4):
+            print j,
             if(alignment_type_flag == '1'):
                 if Debug: print "global"  
                 DPResult= global_alignment(example,text[4*i+j],remove_stopword_flag,similarity_type,two_glove_flag)
@@ -86,61 +89,62 @@ def DocToDoc_Similarity_Random(text, remove_stopword_flag, alignment_type_flag, 
                 current_max = DPResult
                 current_idx = j
         result.append(4*i+current_idx)
+        print 'predicted:', current_idx
     return result
 
 
 def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_glove_flag):
-	# tic = time.time()
-	s1 = s1.lower()
-	s2 = s2.lower()
+    # tic = time.time()
+    s1 = s1.lower()
+    s2 = s2.lower()
     # len1 = len(s1)+1
     # len2 = len(s2)+1
     # # print len1, len2
-	s1 = s1.split(' ')
-	s2 = s2.split(' ')
-	if(remove_stopword_flag):
-		if Debug: print "remove_stopword_flag"
-		s1 = removeStopwords(s1,Stopwords)
-		s2 = removeStopwords(s2,Stopwords)
-	len1 = len(s1)+1
-	len2 = len(s2)+1
+    s1 = s1.split(' ')
+    s2 = s2.split(' ')
+    if(remove_stopword_flag):
+        if Debug: print "remove_stopword_flag"
+        s1 = removeStopwords(s1,Stopwords)
+        s2 = removeStopwords(s2,Stopwords)
+    len1 = len(s1)+1
+    len2 = len(s2)+1
 
-	table = numpy.zeros([len1, len2])
-	Gaptimes=0
-	Dtimes = 0
+    table = numpy.zeros([len1, len2])
+    Gaptimes=0
+    Dtimes = 0
 
-	for i in range(1, len1):
-		for j in range(1, len2):
-			score1 = table[i, j-1] + p_gap
-			if(similarity_type == '1'):
-				if Debug: print "glove"
-				if(two_glove_flag):
-					if Debug: print "2 glove"
-					score2 =table[i-1, j-1] +  normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
-				else:
-					if Debug: print "1 glove"
-					score2 =   table[i-1, j-1]+ normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
-			else:
-				if Debug: print "wordnet"
-				wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
-				if wordnet_score == -1 : 
-					wordnet_score = 0
-				score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
+    for i in range(1, len1):
+        for j in range(1, len2):
+            score1 = table[i, j-1] + p_gap
+            if(similarity_type == '1'):
+                if Debug: print "glove"
+                if(two_glove_flag):
+                    if Debug: print "2 glove"
+                    score2 =table[i-1, j-1] +  normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
+                else:
+                    if Debug: print "1 glove"
+                    score2 =   table[i-1, j-1]+ normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
+            else:
+                if Debug: print "wordnet"
+                wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
+                if wordnet_score == -1 : 
+                    wordnet_score = 0
+                score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
 
             score4  = 0
             score3 = table[i-1, j] + p_gap
-			table[i, j] = max(score1, score2, score3 , score4)
-			if(table[i, j] ==score4):
-				Dtimes+=1
-			else:
-				Gaptimes+=1
-	print "Dtimes, Gaptimes : " , Dtimes, Gaptimes
-	score = table.max()
+            table[i, j] = max(score1, score2, score3 , score4)
+            if(table[i, j] ==score4):
+                Dtimes+=1
+            else:
+                Gaptimes+=1
+    print "Dtimes, Gaptimes : " , Dtimes, Gaptimes
+    score = table.max()
     # toc = time.time()
     # print('Processing time: %r'
     #        % (toc - tic))
 
-	return score
+    return score
 
 def global_alignment(s1,s2,remove_stopword_flag,similarity_type , two_glove_flag):
     p_gap = 0
@@ -263,14 +267,15 @@ if __name__ == "__main__":
     # similarity_type = sys.argv[10]
 
 
-    if similarity_type == '1':
+    if similarity_type != '1':
         dictionary = None
         glove = None
+        double_glove_flag = False
     else:
         dictionary = read_dictionary(dic)
         glove = read_glove(_glove)
-    label, text = read_data(test)
-    # text = read_data_random(test)
+    # label, text = read_data(test)
+    text = read_data_random(test)
 
     tic = time.time()
     # result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)

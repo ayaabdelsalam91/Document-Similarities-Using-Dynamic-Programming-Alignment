@@ -9,23 +9,42 @@ import string
 def get_similarity_from_wordnet(word1,word2):
     if(word1 == word2):
         return 1
-    wordFromList1 = wordnet.synsets(word1)
-    wordFromList2 = wordnet.synsets(word2)
-    if wordFromList1 and wordFromList2:
-        # s = 0
-        # count = 0
-        s = wordFromList1[0].wup_similarity(wordFromList2[0])
-        # for synset1 in wordFromList1:
-        #     for synset2 in wordFromList2:
-        #         if synset1.wup_similarity(synset2):
-        #             s += synset1.wup_similarity(synset2)
-        #             count += 1
-        # if count == 0:
-        #     s = -1
-        # else:
-        #     s = s/count
-    else:
-    	s=-1
+    try:
+        wordFromList1 = wordnet.synsets(word1)
+        wordFromList2 = wordnet.synsets(word2)
+        if wordFromList1 and wordFromList2:
+            s = wordFromList1[0].wup_similarity(wordFromList2[0])
+        else:
+            s=-1
+    except UnicodeDecodeError:
+        s = -1
+    if s== None:
+        s=-1
+    return s
+
+def get_similarity_from_avg_wordnet(word1,word2):
+    if(word1 == word2):
+        return 1
+    try:
+        wordFromList1 = wordnet.synsets(word1)
+        wordFromList2 = wordnet.synsets(word2)
+        if wordFromList1 and wordFromList2:
+            s = 0
+            count = 0
+            for synset1 in wordFromList1:
+                for synset2 in wordFromList2:
+                    temp = synset1.wup_similarity(synset2)
+                    if temp:
+                        s += temp
+                        count += 1
+            if count == 0:
+                s = -1
+            else:
+                s = s/count
+        else:
+            s=-1
+    except UnicodeDecodeError:
+        s = -1
     if s== None:
         s=-1
     return s
@@ -120,23 +139,5 @@ def get_sentence_similarity(FirstSentence,SecondSentence,Main_dictionary,Main_gl
     #print "similarity" , similarity
     return similarity
 
- 
-if __name__ == "__main__":
-	dic=sys.argv[1]
-	_glove=sys.argv[2]
-	dictionary = read_dictionary(dic)
-	glove= read_glove(_glove)
-	tic = time.time()
-	s= get_similarity_from_glove("mahhhjgjhth","cat",dictionary,glove)
-	toc = time.time()
-	print s
-	print('Processing time: %r'
-           % (toc - tic))
-	tic = time.time()
-	s= get_similarity_from_wordnet('cat','mahhhjgjhth')
-	toc = time.time()
-	print('Processing time: %r'
-           % (toc - tic))
-	#
-	print s
+
 

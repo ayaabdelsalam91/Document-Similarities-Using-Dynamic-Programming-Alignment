@@ -119,7 +119,6 @@ def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_g
     table = numpy.zeros([len1, len2])
     Gaptimes=0
     Dtimes = 0
-
     for i in range(1, len1):
         for j in range(1, len2):
             score1 = table[i, j-1] + p_gap
@@ -128,7 +127,6 @@ def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_g
                 if(two_glove_flag):
                     if Debug: print "2 glove"
                     score2 =table[i-1, j-1] + normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
-
                 else:
                     if Debug: print "1 glove"
                     score2 = table[i-1, j-1]+ normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
@@ -210,6 +208,12 @@ def global_alignment(s1,s2,remove_stopword_flag,similarity_type , two_glove_flag
                 if wordnet_score == -1 : 
                     wordnet_score = 0
                 score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
+            elif(similarity_type=='3'):
+                if Debug: print "average wordnet"
+                wordnet_score  = get_similarity_from_avg_wordnet(s1[i-1], s2[j-1])
+                if wordnet_score == -1 : 
+                    wordnet_score = 0
+                score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
             else:
                 # print "S1: "  , s1[i-1]
                 # print  "S2: "  ,  s2[j-1]
@@ -253,7 +257,7 @@ if __name__ == "__main__":
     global Debug
     #Debug = True
     Debug = False
-    name = raw_input('Enter file name: ')
+    name = raw_input('Enter dataset name: ')
     test = name + ".txt"
     # dic = raw_input('Enter dictionary path: ')
     # _glove = raw_input('Enter glove path: ')
@@ -267,10 +271,6 @@ if __name__ == "__main__":
     _glove2= name + "_glove_XXL.txt"
     secondary_dictionary =  read_dictionary(dic2)
     secondary_glove = read_glove(_glove2)
-    # else:
-    # 	double_glove_flag = False
-
-    # double_glove_flag =  True
     remove_stopword_flag =raw_input('Type True is you will be want to remove stopwords: ')
     if(remove_stopword_flag == 'True'):
     	remove_stopword_flag = True
@@ -280,25 +280,11 @@ if __name__ == "__main__":
     categories_flag  =raw_input('Type category number: ')
     print categories_flag
     alignment_type_flag =raw_input('Type 1 for global_alignment and 2 for local_alignment: ')
-    similarity_type = raw_input('Type 1 for glove and 2 for wordnet and 3 for sentence to sentence Similarity: ')
+    similarity_type = raw_input('Type 1 for word embeddings, 2 for wordnet, 3 for average wordnet and 4 sentence to sentence Similarity: ')
 
-    # test=sys.argv[1]
-    # dic=sys.argv[2]
-    # _glove=sys.argv[3]
-    # dic2=sys.argv[4]
-    # _glove2=sys.argv[5]
-    # remove_stopword_flag =sys.argv[6] 
-    # categories_flag =  sys.argv[7]
-    # double_glove_flag = sys.argv[8]
-    # alignment_type_flag = sys.argv[9]
-    # similarity_type = sys.argv[10]
-
-
-    
     dictionary = read_dictionary(dic)
     glove = read_glove(_glove)
     label ,  text = read_data(test)
-    # text = read_data_random(test)
     if(categories_flag == '1'):
     	categories= ['comp.graphics', 'sci.med', 'soc.religion.christian', 'sci.crypt','talk.politics.mideast']
     	print "graphics"
@@ -309,22 +295,18 @@ if __name__ == "__main__":
         categories = ['project', 'course', 'student','faculty']
         print "project"
     else:
-        categories = ['surprise.SMTnews', 'MSRpar', 'SMTeuroparl']
+        categories = ['MSRpar', 'surprise.SMTnews', 'SMTeuroparl']
         print 'surprise.SMTnews'
     	
 
     tic = time.time()
     result = DocToDoc_Similarity(label,text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
-    # result = DocToDoc_Similarity_Random(text,categories,remove_stopword_flag,alignment_type_flag ,similarity_type , double_glove_flag)
-    # correct_answer = range(1, len(text), 4)
 
 
     toc = time.time()
     print('Processing time: %r'
        % (toc - tic))
-    print label
-    print result
     eval(label,result)
     os.system('say "your program has finished"')
-    # eval(correct_answer, result)
+
 		
