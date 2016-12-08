@@ -4,6 +4,7 @@ from nltk.corpus import wordnet
 from TrainingDataProcessing import *
 import time
 import numpy
+import string
 
 def get_similarity_from_wordnet(word1,word2):
     if(word1 == word2):
@@ -11,22 +12,22 @@ def get_similarity_from_wordnet(word1,word2):
     wordFromList1 = wordnet.synsets(word1)
     wordFromList2 = wordnet.synsets(word2)
     if wordFromList1 and wordFromList2:
-        s = 0
-        count = 0
-        # s = wordFromList1[0].wup_similarity(wordFromList2[0])
-        for synset1 in wordFromList1:
-            for synset2 in wordFromList2:
-                if synset1.wup_similarity(synset2):
-                    s += synset1.wup_similarity(synset2)
-                    count += 1
-        if count == 0:
-            s = -1
-        else:
-            s = s/count
+        # s = 0
+        # count = 0
+        s = wordFromList1[0].wup_similarity(wordFromList2[0])
+        # for synset1 in wordFromList1:
+        #     for synset2 in wordFromList2:
+        #         if synset1.wup_similarity(synset2):
+        #             s += synset1.wup_similarity(synset2)
+        #             count += 1
+        # if count == 0:
+        #     s = -1
+        # else:
+        #     s = s/count
     else:
     	s=-1
-    # if s== None:
-    #     s=-1
+    if s== None:
+        s=-1
     return s
 
 def _cosine_similarity(v1,v2):
@@ -63,12 +64,28 @@ def get_similarity_from_glove(word1,word2,dictionary,glove,Secondary_dictionary=
     #     print word1 , word2 , s
     return s
 
+def get_word_from_glove(word,Main_dictionary,Main_glove,dictionary,glove):
+    if(word in Main_dictionary):
+        X_line = Main_glove[Main_dictionary[word]]
+        X_vector = [float(num) for num in X_line[1:301]]
+        return X_vector
+    elif(word in dictionary):
+        X_line = glove[dictionary[word]]
+        X_vector = [float(num) for num in X_line[1:301]]
+        return X_vector
+    else:
+        return -1
+
 def get_sentence_similarity(FirstSentence,SecondSentence,Main_dictionary,Main_glove,dictionary,glove_dictionary):
+    # print "FirstSentence:   " , FirstSentence
+    # print "SecondSentence:  " , SecondSentence
     table = string.maketrans("","")
     FirstSentence = FirstSentence.lower()
     SecondSentence = SecondSentence.lower()
     FirstSentence = FirstSentence.split(' ')
     SecondSentence = SecondSentence.split(' ')
+    # print "FirstSentence:   " , FirstSentence
+    # print "SecondSentence:  " , SecondSentence
     len1 = len(FirstSentence)+1
     len2 = len(SecondSentence)+1
     FirstSentence_vector=[0] * 300
@@ -91,8 +108,6 @@ def get_sentence_similarity(FirstSentence,SecondSentence,Main_dictionary,Main_gl
     for i in range(0, len2-1):
         if(len(SecondSentence[i])>0):
             SecondSentence[i] = SecondSentence[i].translate(table, string.punctuation)
-            # if(SecondSentence[i][-1] == '.' or SecondSentence[i][-1] == '?'):
-            #   SecondSentence[i]=SecondSentence[i][:-1]
             vector = get_word_from_glove(SecondSentence[i],Main_dictionary,Main_glove,dictionary,glove_dictionary)
             if(vector != -1 and vector !=[]):
                 num+=1
@@ -102,39 +117,9 @@ def get_sentence_similarity(FirstSentence,SecondSentence,Main_dictionary,Main_gl
     else:
         print SecondSentence
     similarity = _cosine_similarity(FirstSentence_vector,SecondSentence_vector)
-    # print similarity[0][0]
-    return normalized(-1,1,0,5,similarity)
+    #print "similarity" , similarity
+    return similarity
 
-# def global_alignment(s1, s2, sim_fun, glove, dictionary, p_gap):
-#     tic = time.time()
-#     s1 = s1.lower()
-#     s2 = s2.lower()
-#     print s1
-#     print s2
-#     s1 = s1.split(' ')
-#     s2 = s2.split(' ')
-#     len1 = len(s1)+1
-#     len2 = len(s2)+1
-#     table = numpy.zeros([len1, len2])
-    
-#     for i in range(len2):
-#         table[0, i] = i*p_gap;
-#     for i in range(len1):
-#         table[i, 0] = i*p_gap;
-
-#     for i in range(1, len1):
-#         for j in range(1, len2):
-#             score1 = table[i, j-1] + p_gap
-#             score2 = table[i-1, j-1]+sim_fun(s1[i-1], s2[j-1], glove, dictionary)
-#             score3 = table[i-1, j] + p_gap
-#             table[i, j] = max(score1, score2, score3)
-
-#     score = table[len1-1, len2-1]
-#     toc = time.time()
-#     print('Processing time: %r'
-#            % (toc - tic))
-#     exit(0)
-#     return score
  
 if __name__ == "__main__":
 	dic=sys.argv[1]

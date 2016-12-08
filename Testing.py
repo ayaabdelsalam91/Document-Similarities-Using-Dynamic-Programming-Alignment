@@ -5,6 +5,7 @@ from TrainingDataProcessing import *
 from random import *
 # import glob
 import time
+import os
 
 def read_data(input):
 	in_file = open(input, "r")
@@ -38,7 +39,7 @@ def DocToDoc_Similarity(label, text,categories,remove_stopword_flag,alignment_ty
 			count+=1
 			print count
 			index = randint(i*50, i*50+49)
-			print index
+			#print "index is: " , index , "   text:   " , text[index]
 			if(alignment_type_flag == '1'):
 				if Debug: print "global"  
 				DPResult= global_alignment(example,text[index],remove_stopword_flag,similarity_type,two_glove_flag)
@@ -48,16 +49,16 @@ def DocToDoc_Similarity(label, text,categories,remove_stopword_flag,alignment_ty
 			if(i==0):
 				indexx = index
 				max = DPResult
-				print "awel mara" , max  , index , label[index]
+				#print "Max" , max  , index , label[index]
 			elif(DPResult>max):
 				indexofchoosen = index
 				max = DPResult
-				print "Max at3'yar"  , max , i , index , label[index]
+				#print "Max change"  , max , i , index , label[index]
 				output=i
-		if(output != 0):
-			print "Example : " , example
-			print "Right answer: "  , text[indexx]
-			print "Choosen answer: "  , text[indexofchoosen]
+		# if(output != 0):
+		# 	print "Example : " , example
+		# 	print "Right answer: "  , text[indexx]
+		# 	print "Choosen answer: "  , text[indexofchoosen]
 
 		# 	# print "count kam isa? " ,  count
 		# if(count > 50):
@@ -90,74 +91,96 @@ def DocToDoc_Similarity_Random(text, categories, remove_stopword_flag, alignment
 
 
 def local_alignment(s1, s2, p_gap , remove_stopword_flag,similarity_type , two_glove_flag):
+    specialchars= [',','.','?','!',':',';','"','-','--','(',')','[',']','{','}','',' ','\t']
 	# tic = time.time()
-	s1 = s1.lower()
-	s2 = s2.lower()
-    # len1 = len(s1)+1
-    # len2 = len(s2)+1
-    # # print len1, len2
-	s1 = s1.split(' ')
-	s2 = s2.split(' ')
-	if(remove_stopword_flag):
-		if Debug: print "remove_stopword_flag"
-		s1 = removeStopwords(s1,Stopwords)
-		s2 = removeStopwords(s2,Stopwords)
-	len1 = len(s1)+1
-	len2 = len(s2)+1
+    s1 = s1.lower()
+    s2 = s2.lower()
+    if(similarity_type!='3'):
+        s1 = s1.split(' ')
+        s2 = s2.split(' ')
+        if(remove_stopword_flag):
+            if Debug: print "remove_stopword_flag"
+            s1 = removeStopwords(s1,Stopwords)
+            s2 = removeStopwords(s2,Stopwords)
+        else:
+            if Debug: print "dont remove_stopword_flag" 
+    else:
+        s1 = s1.split('.')
+        s2 =  s2.split('.')
+        for specialchar in specialchars:
+            if(specialchar in s1):
+                s1.remove(specialchar)
+            if(specialchar in s2):
+                s2.remove(specialchar)
 
-	table = numpy.zeros([len1, len2])
-	Gaptimes=0
-	Dtimes = 0
+    len1 = len(s1)+1
+    len2 = len(s2)+1
 
-	for i in range(1, len1):
-		for j in range(1, len2):
-			score1 = table[i, j-1] + p_gap
-			if(similarity_type == '1'):
-				if Debug: print "glove"
-				if(two_glove_flag):
-					if Debug: print "2 glove"
-					score2 =table[i-1, j-1] + normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
+    table = numpy.zeros([len1, len2])
+    Gaptimes=0
+    Dtimes = 0
 
-				else:
-					if Debug: print "1 glove"
-					score2 = table[i-1, j-1]+ normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
-			else:
-				if Debug: print "wordnet"
-				wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
-				if wordnet_score == -1 : 
-					wordnet_score = 0
-				score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
+    for i in range(1, len1):
+        for j in range(1, len2):
+            score1 = table[i, j-1] + p_gap
+            if(similarity_type == '1'):
+                if Debug: print "glove"
+                if(two_glove_flag):
+                    if Debug: print "2 glove"
+                    score2 =table[i-1, j-1] + normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
+
+                else:
+                    if Debug: print "1 glove"
+                    score2 = table[i-1, j-1]+ normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
+            elif(similarity_type == '2'):
+                if Debug: print "wordnet"
+                wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
+                if wordnet_score == -1 : 
+                    wordnet_score = 0
+                score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
+            else:
+                score2 = table[i-1, j-1]+normalized (-1,1,-10,10, get_sentence_similarity (s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
+
             score3 = table[i-1, j] + p_gap
-			score4 = 0
+            score4 = 0
             table[i, j] = max(score1, score2, score3 , score4)
-			if(table[i, j] ==score4):
-				Dtimes+=1
-			else:
-				Gaptimes+=1
-	print "Dtimes, Gaptimes : " , Dtimes, Gaptimes
-	score = table.max()
+    #         if(table[i, j] ==score4):
+    #             Dtimes+=1
+    #         else:
+    #             Gaptimes+=1
+    # print "Dtimes, Gaptimes : " , Dtimes, Gaptimes
+    score = table.max()
     # toc = time.time()
     # print('Processing time: %r'
     #        % (toc - tic))
 
-	return score
+    return score
 
 def global_alignment(s1,s2,remove_stopword_flag,similarity_type , two_glove_flag):
+    specialchars= [',','.','?','!',':',';','"','-','--','(',')','[',']','{','}','',' ','\t']
     p_gap = 0
-    # tic = time.time()
     s1 = s1.lower()
     s2 = s2.lower()
-    # len1 = len(s1)+1
-    # len2 = len(s2)+1
-    # # print len1, len2
-    s1 = s1.split(' ')
-    s2 = s2.split(' ')
-    if(remove_stopword_flag):
-        if Debug: print "remove_stopword_flag"
-        s1 = removeStopwords(s1,Stopwords)
-        s2 = removeStopwords(s2,Stopwords)
+    if(similarity_type!='3'):
+        s1 = s1.split(' ')
+        s2 = s2.split(' ')
+        if(remove_stopword_flag):
+            if Debug: print "remove_stopword_flag"
+            s1 = removeStopwords(s1,Stopwords)
+            s2 = removeStopwords(s2,Stopwords)
+        else:
+        	if Debug: print "dont remove_stopword_flag" 
     else:
-    	if Debug: print "dont remove_stopword_flag" 
+        
+        s1 = s1.split('.')
+        s2 =  s2.split('.')
+        for specialchar in specialchars:
+            if(specialchar in s1):
+                s1.remove(specialchar)
+            if(specialchar in s2):
+                s2.remove(specialchar)
+    #print s1,s2
+
     len1 = len(s1)+1
     len2 = len(s2)+1
     table = numpy.zeros([len1, len2])
@@ -181,14 +204,17 @@ def global_alignment(s1,s2,remove_stopword_flag,similarity_type , two_glove_flag
                 else:
                     if Debug: print "1 glove"
                     score2 = table[i-1, j-1]+normalized (-1,1,-10,10,get_similarity_from_glove(s1[i-1], s2[j-1], dictionary,glove))
-            else:
+            elif(similarity_type == '2'):
                 if Debug: print "wordnet"
                 wordnet_score  = get_similarity_from_wordnet(s1[i-1], s2[j-1])
                 if wordnet_score == -1 : 
                     wordnet_score = 0
                 score2 = table[i-1, j-1]+normalized (0,1,-10,10,wordnet_score)
-            # toc = time.time()
-            #print ("time for glove similarity: %r" % (toc-tic))
+            else:
+                # print "S1: "  , s1[i-1]
+                # print  "S2: "  ,  s2[j-1]
+                score2 = table[i-1, j-1]+normalized (-1,1,-10,10, get_sentence_similarity (s1[i-1], s2[j-1], dictionary,glove,secondary_dictionary,secondary_glove))
+
             score3 = table[i-1, j] + p_gap
             table[i, j] = max(score1, score2, score3)
     #         if(table[i, j] ==score2 ):
@@ -227,19 +253,24 @@ if __name__ == "__main__":
     global Debug
     #Debug = True
     Debug = False
+    name = raw_input('Enter file name: ')
+    test = name + ".txt"
+    # dic = raw_input('Enter dictionary path: ')
+    # _glove = raw_input('Enter glove path: ')
+    dic = "../phrase-XXL_dictionary.txt"
+    _glove = "../paragram-phrase-XXL.txt"
+   
+    # double_glove_flag =  raw_input('Type True is you will be using 2 gloves: ')
+    # if(double_glove_flag== 'True'):
+    double_glove_flag =  True
+    dic2=name+"_dictionary_XXL.txt"
+    _glove2= name + "_glove_XXL.txt"
+    secondary_dictionary =  read_dictionary(dic2)
+    secondary_glove = read_glove(_glove2)
+    # else:
+    # 	double_glove_flag = False
 
-    test = raw_input('Enter test path: ')
-    dic = raw_input('Enter dictionary path: ')
-    _glove = raw_input('Enter glove path: ')
-    double_glove_flag =  raw_input('Type True is you will be using 2 gloves: ')
-    if(double_glove_flag== 'True'):
-    	double_glove_flag =  True
-    	dic2=raw_input('Enter second dictionary path: ')
-    	_glove2= raw_input('Enter second glove path: ')
-    	secondary_dictionary =  read_dictionary(dic2)
-    	secondary_glove = read_glove(_glove2)
-    else:
-    	double_glove_flag = False
+    # double_glove_flag =  True
     remove_stopword_flag =raw_input('Type True is you will be want to remove stopwords: ')
     if(remove_stopword_flag == 'True'):
     	remove_stopword_flag = True
@@ -249,7 +280,7 @@ if __name__ == "__main__":
     categories_flag  =raw_input('Type category number: ')
     print categories_flag
     alignment_type_flag =raw_input('Type 1 for global_alignment and 2 for local_alignment: ')
-    similarity_type = raw_input('Type 1 for glove and 2 for wordnet: ')
+    similarity_type = raw_input('Type 1 for glove and 2 for wordnet and 3 for sentence to sentence Similarity: ')
 
     # test=sys.argv[1]
     # dic=sys.argv[2]
@@ -294,5 +325,6 @@ if __name__ == "__main__":
     print label
     print result
     eval(label,result)
+    os.system('say "your program has finished"')
     # eval(correct_answer, result)
 		
